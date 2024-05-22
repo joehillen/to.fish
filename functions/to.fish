@@ -6,7 +6,7 @@ function __to_usage
   echo '                             Default BOOKMARK: name of current directory'
   echo '                             Default DEST: path to current directory'
   echo ' to add DEST               Create a bookmark for DEST if it is a directory'
-  echo ' to here                   Shows bookmark for current dir'
+  echo ' to here                   Shows bookmark for current directory'
   echo ' to ls                     List all bookmarks'
   echo ' to mv OLD NEW             Change the name of a bookmark from OLD to NEW'
   echo ' to rm BOOKMARK            Remove BOOKMARK'
@@ -71,7 +71,7 @@ end
 
 function __to_here
     set -x currentdir (pwd)
-    set -x wholepath (ls -l ~/.tofish | grep $currentdir | cut -d':' -f 2 | cut -d' ' -f 2,4 )
+    set -x wholepath (ls -l $TO_DIR | grep $currentdir | cut -d':' -f 2 | cut -d' ' -f 2,4 )
     for line in $wholepath
         set -x inner (echo $line | cut -d' ' -f 2)
         if [ $inner = $currentdir ]
@@ -81,7 +81,7 @@ function __to_here
         end
     end
     if not test $result
-        echo 'there is no to-fish link for this dir'
+        echo 'there is no to-fish link for this directory'
     end
 end
 

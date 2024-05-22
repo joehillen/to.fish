@@ -6,6 +6,7 @@ function __to_usage
   echo '                             Default BOOKMARK: name of current directory'
   echo '                             Default DEST: path to current directory'
   echo ' to add DEST               Create a bookmark for DEST if it is a directory'
+  echo ' to here                   Shows bookmark for current dir'
   echo ' to ls                     List all bookmarks'
   echo ' to mv OLD NEW             Change the name of a bookmark from OLD to NEW'
   echo ' to rm BOOKMARK            Remove BOOKMARK'
@@ -66,6 +67,22 @@ function __to_ls
   for l in (__to_dir)/*
     basename $l
   end
+end
+
+function __to_here
+    set -x currentdir (pwd)
+    set -x wholepath (ls -l ~/.tofish | grep $currentdir | cut -d':' -f 2 | cut -d' ' -f 2,4 )
+    for line in $wholepath
+        set -x inner (echo $line | cut -d' ' -f 2)
+        if [ $inner = $currentdir ]
+            set -x result (echo $line | cut -d' ' -f 1)
+            echo $currentdir '->' $result
+            break
+        end
+    end
+    if not test $result
+        echo 'there is no to-fish link for this dir'
+    end
 end
 
 function __to_rm
@@ -184,7 +201,7 @@ function to -d 'Bookmarking tool'
   set -l numargs (count $argv)
   switch $cmd
     # subcommands that don't take an argument
-    case ls help clean
+    case ls help clean here
       if not test $numargs -eq 1
         echo "Usage: to $cmd"
         return 1
@@ -217,6 +234,11 @@ function to -d 'Bookmarking tool'
     # Add a bookmark
     case add
       __to_add $argv[2..-1]
+      return $status
+
+    # Show bookmark for current dir
+    case here
+      __to_here
       return $status
 
     # Remove a bookmark

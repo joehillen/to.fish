@@ -77,7 +77,6 @@ function __to_here
         if [ $inner = $currentdir ]
             set -x result (echo $line | cut -d' ' -f 1)
             echo $currentdir '->' $result
-            break
         end
     end
     if not test $result
